@@ -1,9 +1,9 @@
 import { BinaryLike, createHash } from 'crypto'
 
-function sha256(content: string) {
+export function sha256(content: string) {
   return createHash('sha256').update(content).digest('hex')
 }
 
 export function hashPassword(password: string) {
-  return sha256(password)
+  return sha256(password + process.env.PASSWORD_SECRET)
 }
