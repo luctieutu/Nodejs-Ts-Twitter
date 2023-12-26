@@ -7,7 +7,7 @@ const UsersRouter = Express.Router()
 UsersRouter.get('/', (req, res) => {
   res.send('Hello, My name is Luc')
 })
-UsersRouter.post('/login', loginValidator, loginController)
+UsersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 /**
  * Description. Resgister a new user
  * Path: /register
