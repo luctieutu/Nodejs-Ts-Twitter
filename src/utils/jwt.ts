@@ -1,5 +1,8 @@
 import { config } from 'dotenv'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { ErrorWithStatus } from '~/models/Errors'
+import { TokenPayload } from '~/models/requests/users.requests'
 
 config()
 export const signToken = ({
@@ -17,6 +20,24 @@ export const signToken = ({
         throw rejects(error)
       }
       resolve(token as string)
+    })
+  })
+}
+
+export const verifyToken = ({
+  token,
+  secretOrPublicKeye = process.env.JWT_SECRET as string
+}: {
+  token: string
+  secretOrPublicKeye?: string
+}) => {
+  return new Promise<TokenPayload>((resolve, reject) => {
+    jwt.verify(token, secretOrPublicKeye, (error, decoded) => {
+      if (error) {
+        // throw reject(new ErrorWithStatus({ message: error.message, status: HTTP_STATUS.UNAUTHORIZED }))
+        throw reject(error)
+      }
+      resolve(decoded as TokenPayload)
     })
   })
 }

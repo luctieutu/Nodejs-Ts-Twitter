@@ -55,7 +55,6 @@ class UserService {
   }
   async checkEmailExist(email: string) {
     const user = await databaseServices.users.findOne({ email })
-    console.log(user)
     return Boolean(user)
   }
   async login(user_id: string) {
@@ -70,6 +69,10 @@ class UserService {
       acces_token,
       refresh_token
     }
+  }
+  async logout(refresh_token: string) {
+    const result = await databaseServices.refreshTokens.deleteOne({ token: refresh_token })
+    return result
   }
 }
 
