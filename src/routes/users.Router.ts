@@ -7,19 +7,25 @@ import {
   refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
+  updateMeValidator,
+  verifiedUserValidator,
   verifyForgotPasswordTokenValidator
 } from '~/middlewares/user.middlewares'
 import {
   VerifyForgotPasswordController,
   emailVerifyController,
   forgotPasswordController,
+  getMeController,
   loginController,
   logoutController,
   registerController,
   resendEmailVerifyController,
-  resetPasswordController
+  resetPasswordController,
+  updateMeController
 } from '~/controllers/users.controllers'
 import { wrapRequestHandler } from '~/utils/handlers'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
+import { UpdateMeReqBody } from '~/models/requests/users.requests'
 
 const UsersRouter = Express.Router()
 UsersRouter.get('/', (req, res) => {
@@ -96,4 +102,39 @@ UsersRouter.post(
 
 UsersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
 
+/**
+ * Description: Get me profile
+ * Path: /me
+ * Method: Get
+ * Header: { Authorization: Bearer <access_token> }
+ */
+UsersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
+
+/**
+ * Description: Update my profile
+ * Path: /me
+ * Method: PATCH
+ * Header: { Authorization: Beared <access_token> }
+ * Body: UserSchema
+ */
+
+UsersRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  filterMiddleware<UpdateMeReqBody>([
+    'name',
+    'date_of_birth',
+    'bio',
+    'location',
+    'website',
+    'username',
+    'avatar',
+    'cover_photo'
+  ]),
+  wrapRequestHandler(updateMeController)
+)
+
+UsersRouter.post('/follow', accessTokenValidator, verifiedUserValidator, wrapRequestHandler(updateMeController))
 export default UsersRouter
