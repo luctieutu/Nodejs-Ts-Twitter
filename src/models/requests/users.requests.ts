@@ -1,5 +1,6 @@
 import { JwtPayload } from 'jsonwebtoken'
 import { TokenType } from '~/constants/enums'
+import { ParamsDictionary } from 'express-serve-static-core'
 
 export interface RegisterReqBody {
   name: string
@@ -50,4 +51,8 @@ export interface ResetPasswordReqBody {
   forgot_password_token: string
   password: string
   confirm_password: string
+}
+
+export interface UnfollowReqParams extends ParamsDictionary {
+  user_id: string
 }

@@ -12,6 +12,7 @@ import {
   RegisterReqBody,
   ResetPasswordReqBody,
   TokenPayload,
+  UnfollowReqParams,
   VerifyForgotPasswordReqBody
 } from '~/models/requests/users.requests'
 import User from '~/models/schemas/User.schemas'
@@ -156,5 +157,21 @@ export const updateMeController = async (req: Request, res: Response, next: Next
 
 export const followController = async (req: Request, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_authoriaztion as TokenPayload
-  const { follow_user_id } = req.body
+  const { followed_user_id } = req.body
+  const result = await userService.follow(user_id, followed_user_id)
+  return res.json(result)
+}
+
+export const unfollowController = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_authoriaztion as TokenPayload
+  const { user_id: followed_user_id } = req.params
+  const result = await userService.unfollow(user_id, followed_user_id)
+  return res.json(result)
+}
+
+export const changePasswordController = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_authoriaztion as TokenPayload
+  const new_password = req.body.password
+  const result = await userService.changePassword(user_id, new_password)
+  return res.json(result)
 }

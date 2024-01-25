@@ -232,16 +232,67 @@ class UserService {
     return user
   }
 
-  async follow(user_id: string, follow_user_id: string) {
-    await databaseServices.followers.insertOne(
-      new Follower({
-        user_id: new ObjectId(user_id),
-        followed_user_id: new ObjectId(follow_user_id)
-      })
-    )
+  async follow(user_id: string, followed_user_id: string) {
+    const follower = await databaseServices.followers.findOne({
+      user_id: new ObjectId(user_id),
+      followed_user_id: new ObjectId(followed_user_id)
+    })
 
+    if (follower == null) {
+      await databaseServices.followers.insertOne(
+        new Follower({
+          user_id: new ObjectId(user_id),
+          followed_user_id: new ObjectId(followed_user_id)
+        })
+      )
+
+      return {
+        message: USER_MESSAGES.FOLLOW_SUCCESS
+      }
+    }
     return {
-      message: USER_MESSAGES.FOLLOW_SUCCESS
+      message: USER_MESSAGES.FOLLOWED
+    }
+  }
+
+  async unfollow(user_id: string, followed_user_id: string) {
+    const follower = await databaseServices.followers.findOne({
+      user_id: new ObjectId(user_id),
+      followed_user_id: new ObjectId(followed_user_id)
+    })
+    // Không tìm thấy document follower
+    // nghĩa là chưa follow ngừời này
+    if (follower == null) {
+      return {
+        message: USER_MESSAGES.ALREADY_UNFOLLOWED
+      }
+    }
+
+    // Tìm thấy document follower
+    // Nghĩa là đã follow người này rồi, thì ta tiến hành xóa document này
+    await databaseServices.followers.deleteOne({
+      user_id: new ObjectId(user_id),
+      followed_user_id: new ObjectId(followed_user_id)
+    })
+    return {
+      message: USER_MESSAGES.UNFOLLOW_SUCCESS
+    }
+  }
+
+  async changePassword(user_id: string, new_password: string) {
+    await databaseServices.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          password: hashPassword(new_password)
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+    return {
+      message: USER_MESSAGES.CHANGE_PASSWORD_SUCCESS
     }
   }
 }
