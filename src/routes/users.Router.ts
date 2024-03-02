@@ -23,6 +23,7 @@ import {
   getMeController,
   loginController,
   logoutController,
+  oauthController,
   registerController,
   resendEmailVerifyController,
   resetPasswordController,
@@ -44,6 +45,14 @@ UsersRouter.get('/', (req, res) => {
  * Body: {email: string, password: string }
  */
 UsersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
+
+/**
+ * Description. OAuth witch Google
+ * Path: /oauth/google
+ * Method: GET
+ * Query: {code: string }
+ */
+UsersRouter.get('/oauth/google', wrapRequestHandler(oauthController))
 
 /**
  * Description. Resgister a new user

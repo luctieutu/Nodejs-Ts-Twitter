@@ -152,7 +152,7 @@ const imageSchema: ParamSchema = {
       min: 1,
       max: 400
     },
-    errorMessage: USER_MESSAGES.IMAGE_URL_MUST_BE_STRING
+    errorMessage: USER_MESSAGES.IMAGE_URL_LENGTH
   }
 }
 
