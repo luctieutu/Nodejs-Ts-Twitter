@@ -6,7 +6,8 @@ import mediasRouter from './routes/medias.Router'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
 import path from 'path'
-import { UPLOAD_DIR } from './constants/dir'
+import { UPLOAD_IMAGE_DIR } from './constants/dir'
+import staticRouter from './routes/static.Router'
 config()
 const app = express()
 const port = process.env.PORT || 4000
@@ -17,9 +18,12 @@ initFolder()
 app.use(express.json())
 app.use('/users', UsersRouter)
 app.use('/medias', mediasRouter)
-console.log(path.resolve('uploads'))
-app.use('/static', express.static(UPLOAD_DIR))
+
+// app.use('/static', express.static(UPLOAD_IMAGE_DIR)) //C1
+app.use('/static', staticRouter) //C@
+
 app.use(defaultErrorHandler)
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
