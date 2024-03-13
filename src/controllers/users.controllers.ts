@@ -10,6 +10,7 @@ import {
   ForgotPasswordReqBody,
   LoginReqBody,
   LogoutReqBody,
+  RefreshTokenReqBody,
   RegisterReqBody,
   ResetPasswordReqBody,
   TokenPayload,
@@ -61,6 +62,20 @@ export const logoutController = async (
   const result = userService.logout(refresh_token)
   return res.json({
     message: USER_MESSAGES.LOGOUT_SUCCESS
+  })
+}
+
+export const refreshTokenController = async (
+  req: Request<ParamsDictionary, any, RefreshTokenReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { refresh_token } = req.body
+  const { user_id, verify } = req.decoded_refresh_token as TokenPayload
+  const result = await userService.refreshToken({ user_id, verify, refresh_token })
+  return res.json({
+    messega: USER_MESSAGES.REFRESH_TOKEN_SUCCESS,
+    result
   })
 }
 

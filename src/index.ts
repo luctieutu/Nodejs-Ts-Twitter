@@ -5,8 +5,7 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 import mediasRouter from './routes/medias.Router'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
-import path from 'path'
-import { UPLOAD_IMAGE_DIR } from './constants/dir'
+import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from './constants/dir'
 import staticRouter from './routes/static.Router'
 config()
 const app = express()
@@ -20,8 +19,8 @@ app.use('/users', UsersRouter)
 app.use('/medias', mediasRouter)
 
 // app.use('/static', express.static(UPLOAD_IMAGE_DIR)) //C1
-app.use('/static', staticRouter) //C@
-
+app.use('/static', staticRouter) //C2
+app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 app.use(defaultErrorHandler)
 
 app.listen(port, () => {
