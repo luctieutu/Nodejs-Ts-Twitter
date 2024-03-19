@@ -31,6 +31,15 @@ export const uploadVideoHLSController = async (req: Request, res: Response, next
   })
 }
 
+export const videoStatusController = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  const result = await mediasService.getVideoStatus(id)
+  return res.json({
+    message: USER_MESSAGES.GET_VIDEO_STATUS_SUCCESS,
+    result: result
+  })
+}
+
 export const serverImageController = async (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.params
   console.log('namefile: ', name)
@@ -73,4 +82,24 @@ export const serverVideoStreamController = async (req: Request, res: Response, n
   res.writeHead(HTTP_STATUS.PARTUAL_CONTENT, headers)
   const videoStreams = fs.createReadStream(videoPath, { start, end })
   videoStreams.pipe(res)
+}
+
+export const serverM3u8Controller = (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
+    if (err) {
+      res.status((err as any).status).send('Not found')
+    }
+  })
+}
+
+export const serverSegmentController = (req: Request, res: Response, next: NextFunction) => {
+  const { id, v, segment } = req.params
+
+  // segment: 0.ts, 1.ts, 2.ts, ...
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
+    if (err) {
+      res.status((err as any).status).send('Not found')
+    }
+  })
 }
