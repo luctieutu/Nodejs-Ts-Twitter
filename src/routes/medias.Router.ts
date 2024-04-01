@@ -6,7 +6,7 @@ import {
   videoStatusController
 } from '~/controllers/medias.controllers'
 import { accessTokenValidator, verifiedUserValidator } from '~/middlewares/user.middlewares'
-import { wrapRequestHandler } from '~/utils/handlers'
+import { wrapRequestHandler } from '~/services/utils/handlers'
 const mediasRouter = Router()
 
 mediasRouter.post(

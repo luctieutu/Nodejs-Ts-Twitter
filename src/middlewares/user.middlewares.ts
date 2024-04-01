@@ -6,9 +6,9 @@ import { USER_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import databaseServices from '~/services/database.services'
 import userService from '~/services/users.services'
-import { hashPassword } from '~/utils/crypto'
-import { verifyToken } from '~/utils/jwt'
-import { validate } from '~/utils/validation'
+import { hashPassword } from '~/services/utils/crypto'
+import { verifyToken } from '~/services/utils/jwt'
+import { validate } from '~/services/utils/validation'
 import { NextFunction, Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from '~/models/requests/users.requests'
@@ -573,3 +573,12 @@ export const changePasswordValidator = validate(
     confirm_password: confirmPasswordSchema
   })
 )
+
+export const isUserLoggedInValidator = (middleware: (req: Request, res: Response, next: NextFunction) => void) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (req.headers.authorization) {
+      return middleware(req, res, next)
+    }
+    next()
+  }
+}

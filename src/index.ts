@@ -3,18 +3,25 @@ import UsersRouter from '~/routes/users.Router'
 import databaseServices from '~/services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import mediasRouter from './routes/medias.Router'
-import { initFolder } from './utils/file'
+import { initFolder } from './services/utils/file'
 import { config } from 'dotenv'
 import { UPLOAD_VIDEO_DIR } from './constants/dir'
 import staticRouter from './routes/static.Router'
 import cors from 'cors'
 import { MongoClient } from 'mongodb'
+import tweetsRouter from './routes/tweets.Routes'
+import bookmarksRouter from './routes/bookmarks.routes'
+import likesroutes from './routes/likes.routes'
+// import '~/utils/fake'
 config()
 const app = express()
 app.use(cors())
 const port = process.env.PORT || 4000
 databaseServices.connect().then(() => {
   databaseServices.indexUsers()
+  databaseServices.indexRefreshTokens()
+  databaseServices.indexVideoStatus()
+  databaseServices.indexFollowers()
 })
 
 //Tạo Folder upload
@@ -22,6 +29,9 @@ initFolder()
 app.use(express.json())
 app.use('/users', UsersRouter)
 app.use('/medias', mediasRouter)
+app.use('/tweets', tweetsRouter)
+app.use('/bookmarks', bookmarksRouter)
+app.use('/likes', likesroutes)
 
 // app.use('/static', express.static(UPLOAD_IMAGE_DIR)) //C1
 app.use('/static', staticRouter) //C2

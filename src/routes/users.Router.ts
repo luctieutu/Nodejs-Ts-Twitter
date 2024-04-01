@@ -31,7 +31,7 @@ import {
   unfollowController,
   updateMeController
 } from '~/controllers/users.controllers'
-import { wrapRequestHandler } from '~/utils/handlers'
+import { wrapRequestHandler } from '~/services/utils/handlers'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import { UpdateMeReqBody } from '~/models/requests/users.requests'
 
