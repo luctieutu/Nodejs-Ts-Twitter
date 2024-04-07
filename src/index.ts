@@ -12,6 +12,13 @@ import { MongoClient } from 'mongodb'
 import tweetsRouter from './routes/tweets.Routes'
 import bookmarksRouter from './routes/bookmarks.routes'
 import likesroutes from './routes/likes.routes'
+import YAML from 'yaml'
+import fs from 'fs'
+import swaggerUi from 'swagger-ui-express'
+import path from 'path'
+
+const file = fs.readFileSync('./twitter-swagger.yaml', 'utf8')
+const swaggerDocument = YAML.parse(file)
 // import '~/utils/fake'
 config()
 const app = express()
@@ -27,6 +34,7 @@ databaseServices.connect().then(() => {
 //Tạo Folder upload
 initFolder()
 app.use(express.json())
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/users', UsersRouter)
 app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
